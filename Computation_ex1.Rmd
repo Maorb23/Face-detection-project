@@ -1,0 +1,493 @@
+---
+title: "Computational Ex1"
+author: "Noam and Maor"
+date: "2024-07-04"
+output:
+  pdf_document: default
+  html_document: default
+---
+
+# Computation ex1
+
+
+
+## Question 1
+
+
+
+### Part 1
+
+First, the floating point system is represented by the following formula:
+
+$$
+Fl(x) = \left\{ \pm \frac{m}{2^t} \cdot 2^e| \quad 2^{t-1} \leq m < 2^t, e_{min} \leq e \leq e_{max}\right\}
+$$
+
+Consequently, the **maximum** number we can get in our floating point system is: 
+
+$$
+\frac{(2^t-1) 2^{e_{max}}}{2^t} = 2^{e_{max}} \cdot (1-2^{-t})
+$$
+
+### Part 2
+
+The **minimum** number we can get in our floating point system is:
+
+$$
+\frac{(2^{t-1})}{2^{t}} 2^{e_{min}} = 2^{e_{min-1}}
+$$
+
+### Part 3
+
+When talking about Normalized and Denormalized system, one might want to represent them first:
+
+$$
+\text{ Normalized:}
+\\
+F'(x) = \left\{ \pm 0.d_{1}...,d_{n} \cdot 2^e| d_{1} = 1, d_{2},...d_{n} \in \left\{ 0,1 \right\}, e_{min} \leq e \leq e_{max}\right\}
+$$
+
+$$
+\text{ Denormalized:}
+\\
+F''(x) = \left\{ \pm 0.d_{1}...,d_{n} \cdot 2^e| d_{1},d_{2},...d_{n} \in \left\{ 0,1 \right\}, e_{min} \leq e \leq e_{max}\right\}
+$$
+
+
+Thus, the **smallest** Denormalized number we can get:
+
+$$
+\frac{1}{2^{t}} 2^{e_{min}} = 2^{e_{min}-t}
+$$
+
+### Part 4
+
+The **smallest** integer that **can't** be represented in our floating point system is:
+
+$$
+N = N_{max} + 1 = 2^{e_{max}} \cdot (1-2^{-t}) + 1
+$$
+
+Indeed, We can represent all integers in the range of $[N_{min},N_{max}]$.
+
+
+### Part 5
+
+**Example 1:**
+
+We're going to fix t = 3, $e_{max} = 100, e_{min} = -100$ , and we'll choose: 
+
+$e_{0} = 3, m_{1} = 4, m_{2} = 4$
+
+Our chosen e and both m satisfy:
+
+$$
+Fl(x) = \left\{ \pm \frac{m}{2^t} \cdot 2^e| \quad 2^{2} \leq m \leq 2^3, e_{min} \leq e \leq e_{max}\right\}
+$$
+
+Thus, the number we're going to represent is:
+
+$$
+Fl_{1}(x) = Fl_{2}(x) = \pm \frac{4}{2^3} \cdot 2^3 = \pm 4
+$$
+
+We're going to sum them up:
+
+$$
+Fl_{1}(x) + Fl_{2}(x) = 4 + 4 = 8 = m_{1} + m_{2}
+$$
+
+Now, in our floating point system the sum is exact:
+
+$$
+\frac{4}{2^3} \cdot 2^3 + \frac{4}{2^3} \cdot 2^3 = \frac{8}{2^3} \cdot 2^3 = 4 + 4 = 8 
+$$
+
+Overall, we represented 2 numbers in our floating point system and the floating sum is exact.
+
+
+**Example 2:**
+
+We're going to fix t = 3, $e_{max} = 100, e_{min} = -100$ , and we'll choose:
+$e_{0} = 1, m_{1} = 7, m_{2} = 4$
+
+Our chosen e and both m satisfy:
+
+$$
+Fl(x) = \left\{ \pm \frac{m}{2^t} \cdot 2^e| \quad 2^{2} \leq m \leq 2^3, e_{min} \leq e \leq e_{max}\right\}
+$$
+
+So we get:
+
+$$
+Fl_{1}(x) = \pm \frac{7}{2^3} \cdot 2^1 = \pm \frac{7}{4}
+\\
+Fl_{2}(x) = \pm \frac{4}{2^3} \cdot 2^1 = \pm 1
+$$
+Finally when multiplying them we get $\frac{7}{4} \cdot 1 = \frac{7}{4}$
+
+In our floating point system the sum is exact with m = 7 which is in the range of $2^2 \leq m \leq 2^3$.:
+
+$$
+\frac{7}{2^3} \cdot 2^1 \cdot \frac{4}{2^3} \cdot 2^1 = \frac{7}{2^3} \cdot 2^1
+$$
+
+## Question 2
+
+### Part 1
+
+The **smallest**  integer we **can't** represent:
+
+In IEEE single floating point system is:
+
+$$
+N = N_{single} + 1 = (2^{t_{single}}-1) \cdot 2^{e_{smax}-t} +1 = (2^{24}-1) \cdot 2^{128-24} + 1 = (2^{24}-1) \cdot 2^{104} + 1
+$$
+In IEEE double floating point system is:
+
+$$
+N = N_{double} + 1 = (2^{t_{double}}-1) \cdot 2^{e_{dmax}-t} +1 = (2^{53}-1) \cdot 2^{1024-53} + 1 = (2^{53}-1) \cdot 2^{971} + 1
+$$
+
+### Part 2
+
+Adding 1.0 will not change the value. When adding 1.0 to $N_{double}$, We add a small number with $2^{-971}$ in the mantissa. Thus, due to precision limitation, because 1 is smaller than the precision step, the value will remain the same.
+
+
+## Question 3
+
+### Part 1
+
+As we can see, when performing dot product we multiply each element in the vector by the corresponding element in the other vector and sum them up.
+
+This results in p multiplications and p-1 additions:
+
+$$
+<u,v> = \sum_{i=1}^{p} u_{i} \cdot v_{i}
+$$
+
+When analyzing the numerical error we get for i = 1,2...p:
+
+$$
+fl(u_{i}v_{i} + u_{i+1}v_{i+1}) = ((u_{1}v_{1})(1+ \delta_{1}^*) + (u_{2}v_{2})(1+\delta_{2}^*))(1+ \delta_{1,2}^+) + ....  + (u_{n}v_{n})(1+\delta_{n}^*))\cdot \cdot  \quad .... \quad  \cdot (1+\delta_{+}^n)
+$$
+
+To sum it all up we get:
+
+$$
+fl(u_{1}v_{1} + u_{2}v_{2} + ... + u_{n}v_{n}) =\tilde S = \sum_{i=1}^{p} u_{i}v_{i}(1+ \delta_{i}^*) \prod_{j=i+1}^{p} (1+\delta_{j-1}^+)
+$$
+Following this, the relative error is as follows:
+
+$$
+\frac{|\tilde S - S|}{|S|} = \frac{|\sum_{i=1}^{p} u_{i}v_{i}(1+ \delta_{i}^*) \prod_{j=i+1}^{p-1} (1+\delta_{j-1}^+) - \sum_{i=1}^{p} u_{i}v_{i}|}{|\sum_{i=1}^{p} u_{i}v_{i}|} = 
+$$
+$$
+= \frac{|\sum_{i=1}^{p-1} u_{i}v_{i}(1+ \delta_{i}^*) (1 + \sum_{j=1}^{p-1} \delta_{j + O(\epsilon ^2)}) - \sum_{i=1}^{p} u_{i}v_{i}|}{|\sum_{i=1}^{p} u_{i}v_{i}|} = \frac{|\sum_{i=1}^{p} u_{i}v_{i}| (1+ \sum_{i=1}^{p-1} \delta_{j}^+ +\delta_{i}^* -1 + O(\epsilon ^2))}{\sum_{i=1}^{p} u_{i} v_{i}} \leq
+$$
+$$
+\leq |\sum_{i=1}^{p} u_{i}v_{i}| (\max_{i \in [1,n]} \sum_{i=1}^{p-1} \delta_{i}^* + \delta_{j}^+ + O(\epsilon ^2)) \leq (p-1) \epsilon_{mach} + \epsilon_{mach}  +O(\epsilon ^2) = p \cdot \epsilon_{mach} 
+$$
+
+### Part 2
+
+The upper bound for the relative error using the FMA operation is $(p-1) \cdot \epsilon_{mach}$.
+
+We can see that the numerical error is slightly smaller than the error we got in the previous part but it's negligible for large p.
+
+
+### Part 3
+
+One example is binary tree summation that reduces the number of operations to $O(\log n)$, by tree depth, instead of n.
+Summing this way instead of summing consequently all elements, decreases the number of times we multiply by 1 + $\delta^+$ and thus reduces the error.
+
+
+## Question 4
+
+### Part 1
+
+We have here 2 ways to compute the variance:
+
+1. The first way is to calculate the sample variance by the formula:
+
+$$
+s^2 = \frac{1}{n} \sum_{i=1}^{n} (x_{i} - \bar x)^2
+$$
+
+2. The second way is to calculate the sample variance by the formula:
+
+$$
+s^2 = \frac{1}{n} (\sum_{i=1}^{n} x_{i}^2) - \bar x^2
+$$
+
+Looking at the first formula, we can see that we have n multiplications and n-1 additions, which results in a total of 2n-1 operations.
+
+Conversely, the second formula has n multiplications and n additions, which results in a total of 2n operations.
+
+Moreover, when looking at formula (2) we can see that we perform the following steps:
+
+1. Calculate the sum of the squares of the elements: 
+
+This results in squaring and summing big numbers when dealing with [10^9,10^9+1,10^9+2] and thus we might lose information:
+
+$$
+\sum_{i=1}^{n} x_{i}^2 = (10^9)^2 + (10^9+1)^2 + (10^9+2)^2
+$$
+Due to precision limitation, we lose information when summing big numbers.
+
+2. Calculate the mean of the elements and then squaring:
+
+$$
+\bar x = \frac{1}{n} \sum_{i=1}^{n} x_{i} = \frac{10^9 + 10^9 + 1 + 10^9 + 2}{3}
+\\
+\bar x^2 = \left(\frac{10^9 + 10^9 + 1 + 10^9 + 2}{3}\right)^2
+$$
+Again, we square and sum big numbers.
+
+3. Subtract the mean from the sum of the squares
+
+
+### Part 2
+
+The first formula is much more accurate than the second one, because we subtract each i observation from the mean and then square and  sum it all up. Consequently, we deal with smaller numbers in between steps and thus we lose less information because of precision limitations.
+
+
+## Question 5
+
+
+### Part 1
+
+A function is Lipschitz continuous with constant L, when for all x,y in the domain of the function we have:
+
+$$
+|f(x) - f(y)| \leq L \cdot |x-y|
+$$
+
+When a function is Lipschitz continuous, it means that the function is bounded by a linear function with a slope of L. This means that the function is not too steep and doesn't change too much in a small interval.
+
+Let f be a function with bounded derivative in the interval (a,b), then f is Lipschitz continuous with constant L.
+Let's look at constant L:
+if f is differentiable in the interval [a,b], then the derivative of f is bounded in the interval [a,b] by M, then f is Lipschitz continuous with constant L = M. We know from a theorom in the second lecture that $\hat k = ||J_{f}(x)||$, So the Lipschitz constant is related to the absolute condition number.
+
+On the other hand, if a function is Lipschitz continuous with constant L, and we take a differentiable function then the derivative is bounded by L according to lagrange theorem. Thus, the absolute condition number is bounded by L for almost every x in the domain of the function, because the absolute condition number is the norm of the Jacobian matrix.
+
+### Part 2
+
+We added a python file to the **end** of the pdf file.
+
+
+### Part 3
+
+Using repeated multipication to compute $p_{2}(x)$ can indeed reduce the numerical accuracy, especially when dealing with large numbers and high degree polynomials. The reason for this is that when we use the pow function or similar ones in different languages (like R) we use a well defined and executed way to operate the power function. This way is more accurate than repeated multiplication, because it uses a more sophisticated algorithm to compute the power of a number. Furthermore, we suggest that with implicit multiplication we add numerous rounding errors at each multiplication, which can lead to a significant loss of accuracy, as opposed to using the pow function.
+
+
+## Question 6
+
+### Part 1
+
+Let's look at the relative condition number of a tan(x):
+
+tan(x) is differentiable in the interval $(-\frac{\pi}{2} + \pi n,\frac{\pi}{2} + \pi (n+1))$ 
+
+We know that:
+
+$$
+k(x) =  \frac{||J_{tan}(x)||}{\frac{||\tan(x)||}{||x||}} 
+$$
+Because we're in 1 dimension, the Jacobian matrix of tan(x) is:
+
+$$
+||J_{tan}(x)|| = \frac{1}{cos^2(x)} = 1 + tan^2(x)
+\\
+||f(x)|| = tan(x)
+\\
+||x|| = x
+$$
+
+Thus, we'll compute the relative condition number:
+
+$$
+k(x) = \frac{1 + tan^2(x)}{|\frac{tan(x)}{x}|} = \frac{|x|(1 + tan^2(x))}{tan(x)} = \frac{|x|}{|tan(x)|} + |x||tan(x)| 
+$$
+The above expression shows that the relative condition number of tan(x) can be very large when:
+
+1. x is close to $\frac{\pi}{2} + \pi n$ or $-\frac{\pi}{2} + \pi n$. This will result in a very large value of |tan(x)| and thus a very large relative condition number.
+
+2. x is very large, because the value of |x||tan(x)|  will be very large and thus the relative condition number will be very large.
+
+3. tan(x) is close to 0, because the value of |tan(x)| will be very small and thus the relative condition number will be very large.
+
+
+### Part 2
+
+
+Thus, we suggest solving tan for $x = 10^{100} \quad mod \quad \pi$.
+
+Because of the cyclic nature of the tan function, we can solve this problem by computing tan for a much smaller number, which is the residue of $10^{100} \quad mod \quad \pi$. 
+
+This way we can avoid the large value of x and the large value of |tan(x)|, which will result in a very large relative condition number.
+
+In order to perform these high number mods we need a library that can handle such large numbers, a library with high precision such as mpmath in python.
+
+
+## Question 7
+
+
+### Part 1
+
+
+In this question we're using a random perturbation to find an empirical estimate of the condition number. 
+
+This is being done with a straightforward simulation:
+1. Drawing random $\delta_{x} \sim N(0,\sigma^2 I)$ with standard error as small as we want.
+
+2. Calculating the condition number with respect to the perturbation: $k = \frac{||f(x + \delta_{x}) - f(x)||}{||\delta_{x}||}$\
+
+3. Iterating the process with a large number of times and calculating the maximum condition number.
+
+4. Comparing the empirical condition number with the true condition number.
+
+
+We would expect to get a condition number close to the true condition number, because the perturbation is close to 0 and the condition number is defined as:
+
+$$
+k = \lim_{\delta \to 0} \sup_{\triangle x:||\triangle x|| < \delta} \frac{||f(x + \triangle x) - f(x)||}{||\triangle x||}
+$$
+
+We can see that in our simulation we try to get delta as close to 0 as possible, and thus we should get a condition number close to the true condition number.
+
+Moreover, let $f(x) = x^2$ , then the true condition number is 2x, as we've seen in lecture 2. We'll take  x = 1:
+
+$$
+\hat k(x) = lim_{\delta \to 0} \sup_{\triangle x:||\triangle x|| < \delta} \frac{||f(x + \triangle x) - f(x)||}{||\triangle x||} = lim_{\delta \to 0} \sup_{\triangle x:||\triangle x|| < \delta} \frac{|(1 + \delta_{x})^2 - 1|}{|\delta_{x}|} = 2 + \delta_{x} = 2
+$$
+
+Furthermore, we can compute the empirical condition number:
+
+$$
+\hat k = \max _{\delta_{x} \sim N(0, \sigma^2 I)}\frac{||f(x + \delta_{x}) - f(x)||}{||\delta_{x}||} = \max _{\delta_{x} \sim N(0, \sigma^2 I)}\frac{|(1 + \delta_{x})^2 - 1|}{|\delta_{x}|} = \max _{\delta_{x} \sim N(0, \sigma^2 I)}\frac{2\delta_{x} + \delta_{x}^2}{|\delta_{x}|} = \max _{\delta_{x} \sim N(0, \sigma^2 I)}2 + \delta_{x}
+$$
+
+Thus, we can get a lower or an upper bound for the condition number, depends on the sampled random variable.
+
+
+### Part 2
+
+In an **added** python file at the **end** of the pdf file.
+
+
+
+## Question 8
+
+
+### Part 1
+
+Let f(x) = 2x, We'll check if the function is backward stable:
+
+$$
+\tilde f(x) = 2x(1+ \delta_{x})(1 + \delta_{x}^*) = 2\tilde x = 2x(1 + \delta_{x})(1+ \delta_{x}^*) = f(\tilde x)
+\\
+\tilde x = x(1 + \delta_{x})(1+ \delta_{x}^*) 
+$$
+Let's compute the backward relative error:
+
+$$
+\frac{|\tilde x - x|}{|x|} = \frac{|x(1 + \delta_{x})(1+ \delta_{x}^*) - x|}{|x|} = \frac{|x|}{|x|} \cdot |(1 + \delta_{x})(1+ \delta_{x}^*) - 1| = |\delta_{x} + \delta_{x}^* + O(\epsilon^2) | \leq 2\epsilon_{mach} + O(\epsilon^2) = O(\epsilon_{mach})
+$$
+Consequently, the function is backward stable.
+
+
+### Part 2
+
+Let f(x) = $x^2$, We'll check if the function is backward stable:
+
+$$
+\tilde{f}(x) = (x(1 + \delta_{x})x(1 + \delta_{x}))(1 + \delta_{x}^*) = x^2(1 + \delta_{x})^2(1 + \delta_{x}^*) = f(\tilde{x}) = (\tilde{x})^2 \Rightarrow
+\\
+\tilde{x} = x(1 + \delta_{x}) \sqrt{1 + \delta_{x}^*}
+$$
+Let's compute the backward relative error:
+
+$$
+\frac{|\tilde x - x|}{|x|} = \frac{|x(1 + \delta_{x}) \sqrt{(1 + \delta_{x}^*)} - x|}{|x|} = \frac{|x|}{|x|} \cdot |(1 + \delta_{x}) \sqrt{(1 + \delta_{x}^*)} - 1| = |\sqrt{(1 + \delta_{x}^*)} + \sqrt{(1 + \delta_{x}^*)} \cdot \delta_{x} -1 | \leq 
+$$
+
+After multiplying by the conjugate we get:
+
+$$
+\leq \epsilon_{mach} +  0.5 \epsilon_{mach} + O(\epsilon^2) = O(\epsilon_{mach})
+$$
+
+So we got that this function is backward stable.
+
+
+
+### Part 3
+
+Let $f(x) = \frac{x}{x} = 1$, We'll check if the function is forward stable:
+
+$$
+\tilde{f}(x) = \frac{x(1 + \delta_{x})}{x(1 + \delta_{x})} (1+ \delta_{x}^{frac})= 1 + \delta_{x}^{frac} > 1 = f(\tilde{x}), \quad \text{ for } \quad  \delta_{x}^{frac} \neq 0
+$$
+So our function is not backward stable. Let's check if it's stable:
+
+$$
+\text{ We'll take:} \quad \frac{|\tilde x - x|}{|x|} = O(\epsilon_{mach}),  \quad \frac{|\tilde f(x) - f(x)|}{|f(x)|} = \frac{|1 + \delta_{x}^{frac} - 1|}{|1|} = |\delta_{x}^{frac}| = O(\epsilon_{mach})
+$$
+So this function is stable.
+
+
+
+### Part 4
+
+Let $f(x) = x-x = 0$, We'll check if the function is backward stable:
+
+$$
+\tilde{f}(x) = (x(1 + \delta_{x}) - x(1 + \delta_{x}))(1 + \delta_{x}^{sub}) = 0 = f(\tilde{x}), \text{ for every } \tilde x, x
+$$
+So we can choose:
+$$
+\tilde x \in ( \quad x(1 - \delta_{x}^{sub}),(x(1 + \delta_{x}^{sub}) \quad ) 
+$$
+and we'll get:
+
+$$
+\frac{|\tilde x - x|}{|x|} = \frac{|x(1 - \delta_{x}^{sub}) - x|}{|x|} = \frac{|x|}{|x|} \cdot |(1 - \delta_{x}^{sub}) - 1| = |\delta_{x}^{sub}| = O(\epsilon_{mach})
+$$
+
+So this function is backward stable.
+
+
+
+### Part 5
+
+Let $e = \sum_{k = 1}^{\inf} \frac{1}{k!}$, We'll check if the sum is backward stable:
+
+First of all, we don't have an input for this algorithm so:
+
+$$
+f(\tilde x) = e \neq\tilde f(x)
+$$
+
+We'll check if it's stable:
+
+The algorithm is stable if for every x we have:
+
+$$
+\frac{|\tilde x- x|}{|x|} = O(\epsilon_{mach}), \frac{|\tilde f(x) - f(x)|}{|f(x)|} = O(\epsilon_{mach})
+$$
+
+But, When computing the relative error we get:
+
+$$
+\frac{|\tilde f(x) - f(x)|}{|f(x)|} = \frac{|e - e((1+\delta_{k}^*)(1+\delta_{k}^{div}))^k|}{|e|} = \frac{|e|}{|e|} |(1 - (1+\delta_{k}^*)(1+\delta_{k}^{div})^k| = |1 - ((1+\delta_{k}^*)(1+\delta_{k}^{div}))^k| \neq O(\epsilon_{mach})
+$$
+
+So the algorithm is not stable
+
+
+### Part 6
+
+Like before, The algorithm is not stable, even though when summing fro right to left a lot of the accumulated errors are canceled out, but the error is still not bounded by the machine epsilon.
+
+
